@@ -5,6 +5,8 @@ export interface ContractDeployOptions {
   factory: ContractFactory
   params: any[]
   signer: Signer
+  gasLimit?: number
+  gasPrice?: number
 }
 
 export interface GasMeterOptions {
