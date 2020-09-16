@@ -1,4 +1,5 @@
 import { usePlugin, BuidlerConfig } from '@nomiclabs/buidler/config'
+import * as path from 'path';
 
 import {
   DEFAULT_ACCOUNTS_BUIDLER,
@@ -27,7 +28,7 @@ const parseSolppFlags = (): { [flag: string]: boolean } => {
   return flags
 }
 
-const config: BuidlerConfig = {
+const config: any = {
   networks: {
     buidlerevm: {
       accounts: DEFAULT_ACCOUNTS_BUIDLER,
@@ -48,6 +49,7 @@ const config: BuidlerConfig = {
     collapseEmptyLines: true,
   },
   solc: {
+    path: path.resolve(__dirname, '../../node_modules/@eth-optimism/solc'),
     optimizer: { enabled: true, runs: 200 },
   },
 }

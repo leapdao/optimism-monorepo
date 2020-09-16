@@ -35,6 +35,13 @@ library DataTypes {
         uint ovmTxGasLimit;
     }
 
+    struct L2MessageInclusionProof1 {
+        bytes32 stateRoot;
+        uint256 stateRootIndex;
+        bytes stateTrieWitness;
+        bytes storageTrieWitness;
+    }
+
     struct GasMeterConfig {
         uint OvmTxBaseGasFee; // The flat gas overhead imposed on all transactions
         uint OvmTxMaxGas; // Max gas a single transaction is allowed

@@ -18,18 +18,6 @@ contract IL1CrossDomainMessenger {
     uint256 public messageNonce;
     address public xDomainMessageSender;
 
-    /*
-     * Data Structures
-     */
-
-    struct L2MessageInclusionProof {
-        bytes32 stateRoot;
-        uint256 stateRootIndex;
-        DataTypes.StateElementInclusionProof stateRootProof;
-        bytes stateTrieWitness;
-        bytes storageTrieWitness;
-    }
-
 
     /*
      * Public Functions
@@ -48,7 +36,8 @@ contract IL1CrossDomainMessenger {
         address _sender,
         bytes memory _message,
         uint256 _messageNonce,
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof,
+        DataTypes.StateElementInclusionProof memory _stateElementProof
     ) public;
 
     /**

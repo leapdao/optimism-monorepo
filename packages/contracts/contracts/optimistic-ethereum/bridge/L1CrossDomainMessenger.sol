@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import { ContractResolver } from "../utils/resolvers/ContractResolver.sol";
 import { EthMerkleTrie } from "../utils/libraries/EthMerkleTrie.sol";
 import { BytesLib } from "../utils/libraries/BytesLib.sol";
+import { DataTypes } from "../utils/libraries/DataTypes.sol";
 
 /* Interface Imports */
 import { IL1CrossDomainMessenger } from "./L1CrossDomainMessenger.interface.sol";
@@ -46,7 +47,8 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
         address _sender,
         bytes memory _message,
         uint256 _messageNonce,
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof,
+        DataTypes.StateElementInclusionProof memory _stateRootProof
     )
         public
     {
@@ -60,7 +62,8 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
         require(
             _verifyXDomainMessage(
                 xDomainCalldata,
-                _proof
+                _proof,
+                _stateRootProof
             ) == true,
             "Provided message could not be verified."
         );
@@ -146,7 +149,8 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
      */
     function _verifyXDomainMessage(
         bytes memory _xDomainCalldata,
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof,
+        DataTypes.StateElementInclusionProof memory _stateRootProof
     )
         internal
         returns (
@@ -154,7 +158,7 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
         )
     {
         return (
-            _verifyStateRootProof(_proof) && _verifyStorageProof(_xDomainCalldata, _proof)
+            _verifyStateRootProof(_proof, _stateRootProof) && _verifyStorageProof(_xDomainCalldata, _proof)
         );
     }
 
@@ -164,7 +168,8 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
      * @return Whether or not the provided proof is valid.
      */
     function _verifyStateRootProof(
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof,
+        DataTypes.StateElementInclusionProof memory _stateRootProof
     )
         internal
         returns (
@@ -180,7 +185,7 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
         return stateCommitmentChain.verifyElement(
             abi.encodePacked(_proof.stateRoot),
             _proof.stateRootIndex,
-            _proof.stateRootProof
+            _stateRootProof
         );
     }
 
@@ -192,7 +197,7 @@ contract L1CrossDomainMessenger is IL1CrossDomainMessenger, BaseCrossDomainMesse
      */
     function _verifyStorageProof(
         bytes memory _xDomainCalldata,
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof
     )
         internal
         returns (

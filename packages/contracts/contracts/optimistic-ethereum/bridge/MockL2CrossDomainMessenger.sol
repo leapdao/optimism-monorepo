@@ -14,6 +14,15 @@ import { L2CrossDomainMessenger } from "./L2CrossDomainMessenger.sol";
  * @title MockL2CrossDomainMessenger
  */
 contract MockL2CrossDomainMessenger is BaseMockCrossDomainMessenger, L2CrossDomainMessenger {
+    
+    constructor(
+        address _l1MessageSenderPrecompileAddress,
+        address _l2ToL1MessagePasserPrecompileAddress
+    )
+        public
+        L2CrossDomainMessenger(_l1MessageSenderPrecompileAddress, _l2ToL1MessagePasserPrecompileAddress)
+    {}
+
     /*
      * Internal Functions
      */
@@ -42,15 +51,13 @@ contract MockL2CrossDomainMessenger is BaseMockCrossDomainMessenger, L2CrossDoma
     )
         internal
     {
-        IL1CrossDomainMessenger(targetMessengerAddress).relayMessage(
-            _target,
-            _sender,
-            _message,
-            _messageNonce,
-            IL1CrossDomainMessenger.L2MessageInclusionProof({
+        DataTypes.L2MessageInclusionProof1 memory proof = DataTypes.L2MessageInclusionProof1({
                 stateRoot: bytes32(''),
                 stateRootIndex: 0,
-                stateRootProof: DataTypes.StateElementInclusionProof({
+                stateTrieWitness: bytes(''),
+                storageTrieWitness: bytes('')
+            });
+        DataTypes.StateElementInclusionProof memory stateRootProof = DataTypes.StateElementInclusionProof({
                     batchIndex: 0,
                     batchHeader: DataTypes.StateChainBatchHeader({
                         elementsMerkleRoot: bytes32(''),
@@ -59,10 +66,14 @@ contract MockL2CrossDomainMessenger is BaseMockCrossDomainMessenger, L2CrossDoma
                     }),
                     indexInBatch: 0,
                     siblings: new bytes32[](1)
-                }),
-                stateTrieWitness: bytes(''),
-                storageTrieWitness: bytes('')
-            })
+                });
+        IL1CrossDomainMessenger(targetMessengerAddress).relayMessage(
+            _target,
+            _sender,
+            _message,
+            _messageNonce,
+            proof,
+            stateRootProof
         );
     }
 }

@@ -11,7 +11,6 @@ internalTask(TASK_COMPILE_RUN_COMPILER).setAction(
     if (fs.existsSync((config as any).solc.path)) {
       customCompiler = require((config as any).solc.path)
     }
-
     const compiler = new Compiler(
       customCompiler ? customCompiler.version() : config.solc.version,
       path.join(config.paths.cache, 'compilers')

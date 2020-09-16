@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 /* Interface Imports */
 import { IL2CrossDomainMessenger } from "./L2CrossDomainMessenger.interface.sol";
+import { DataTypes } from "../utils/libraries/DataTypes.sol";
 
 /* Contract Imports */
 import { BaseMockCrossDomainMessenger } from "./BaseMockCrossDomainMessenger.sol";
@@ -12,6 +13,14 @@ import { L1CrossDomainMessenger } from "./L1CrossDomainMessenger.sol";
  * @title MockL1CrossDomainMessenger
  */
 contract MockL1CrossDomainMessenger is BaseMockCrossDomainMessenger, L1CrossDomainMessenger {
+    
+    constructor(
+        address _addressResolver
+    )
+        public
+        L1CrossDomainMessenger(_addressResolver)
+    {}
+    
     /*
      * Internal Functions
      */
@@ -22,7 +31,8 @@ contract MockL1CrossDomainMessenger is BaseMockCrossDomainMessenger, L1CrossDoma
      */
     function _verifyXDomainMessage(
         bytes memory _xDomainCalldata,
-        L2MessageInclusionProof memory _proof
+        DataTypes.L2MessageInclusionProof1 memory _proof,
+        DataTypes.StateElementInclusionProof memory _stateRootProof
     )
         internal
         returns (
